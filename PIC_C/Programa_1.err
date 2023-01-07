@@ -1,0 +1,9 @@
+>>> Warning 203 "Programa_1.c" Line 204(1,1): Condition always TRUE
+>>> Warning 216 "Programa_1.c" Line 315(0,1): Interrupts disabled during call to prevent re-entrancy:  (@SITOF)
+>>> Warning 202 "Programa_1.c" Line 21(5,6): Variable never used:   i
+>>> Warning 202 "Programa_1.c" Line 22(6,7): Variable never used:   s
+>>> Warning 202 "Programa_1.c" Line 23(14,19): Variable never used:   dato1
+>>> Warning 202 "Programa_1.c" Line 24(14,19): Variable never used:   dato2
+>>> Warning 202 "Programa_1.c" Line 29(8,19): Variable never used:   total_mayor
+      Memory usage:   ROM=28%      RAM=25% - 33%
+      0 Errors,  7 Warnings.

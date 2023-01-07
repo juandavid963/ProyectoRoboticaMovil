@@ -1,0 +1,175 @@
+clc
+clear all
+close all
+
+vid_obj=videoinput('winvideo',1,'YUY2_160x120');
+% 'YUY2_160x120' 'YUY2_176x144' 'YUY2_320x176' 'YUY2_320x240'
+% 'YUY2_352x288' 'YUY2_432x240' 'YUY2_544x288' 'YUY2_640x360'
+% 'YUY2_640x480'
+set(vid_obj,'FrameGrabInterval',1);
+set(vid_obj,'FramesPerTrigger',inf);
+set(vid_obj,'ReturnedColorspace','rgb');  % rgb grayscale
+
+start(vid_obj);
+
+    orientacion_mem=0;
+    contador_vuelta=0;
+    orientacion_corregida=0;
+
+while~(strcmp(get(gcf,'CurrentCharacter'),'q'))
+
+
+    img=getsnapshot(vid_obj); % toma foto   
+    flushdata(vid_obj); % libero datos del objeto de video        
+    img_gris=rgb2gray(img); % convierto la imagen a escala de grises y la volteo
+    umb=0.86; 
+    bw=im2bw(img_gris,umb);
+    area_imagen=size(bw,1)*size(bw,2);
+    
+    [L1 N1]=bwlabel(bw);
+    [L2 N2]=bwlabel(~bw);
+    
+    propied_1=regionprops(L1,'BoundingBox','Area','Centroid','MajorAxisLength','MinorAxisLength');       
+    propied_2=regionprops(L2,'BoundingBox','Area','Centroid','MajorAxisLength','MinorAxisLength');    
+    contornos=[propied_1; propied_2];
+    
+    %figure(1)
+    imshow(img);
+    %imshow(bw);
+    hold on
+    
+% Analisis de los contornos
+    for i=1:length(contornos)                
+        if (contornos(i).Area > 15) % 20 para filtrar ruido                              
+            if(contornos(i).BoundingBox(3)*contornos(i).BoundingBox(4) < 0.9*area_imagen) % filtar cuadrado grande                                         
+                % coordenadas para identificar contornos dentro del cuadrado
+                x1=contornos(i).BoundingBox(1);
+                y1=contornos(i).BoundingBox(2);
+                x2=contornos(i).BoundingBox(1)+contornos(i).BoundingBox(3);
+                y2=contornos(i).BoundingBox(2)+contornos(i).BoundingBox(4);
+                contador_contornos=0;
+                circulos=[];
+                for j=1:length(contornos)
+                    if(contornos(j).Area > 3)% ruido de contorno interior   
+                        if(contornos(j).BoundingBox(1)>x1 && contornos(j).BoundingBox(1)<x2)  % identifico si es un circulo
+                            if(contornos(j).BoundingBox(2)>y1 && contornos(j).BoundingBox(2)<y2)
+                                if(contornos(j).Centroid(1)>x1 && contornos(j).Centroid(1)<x2)
+                                    if(contornos(j).Centroid(2)>y1 && contornos(j).BoundingBox(2)<y2)
+                                        contador_contornos=contador_contornos+1;
+                                        circulos=[circulos j];
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+
+                if (contador_contornos==2) % si reconoce el patron con 2 contornos internos                        
+                    % organizar circulos (1) mas grande (2) mas pequeño
+                    if (contornos(circulos(1)).Area < contornos(circulos(2)).Area) 
+                        memoria_circulo=circulos(1);
+                        circulos(1)=circulos(2);
+                        circulos(2)=memoria_circulo;
+                    end
+                    % filtrar por el color de los circulos internos (0) Negro (1) Blanco
+                    if (bw(floor(contornos(circulos(1)).Centroid(2)),floor(contornos(circulos(1)).Centroid(1)))==0 && bw(floor(contornos(circulos(2)).Centroid(2)),floor(contornos(circulos(2)).Centroid(1)))==0) 
+                        %calcular distancia entre dos puntos de referencia 
+                        dist_2_puntos=sqrt((contornos(circulos(1)).Centroid(1)-contornos(circulos(2)).Centroid(1))^2+(contornos(circulos(1)).Centroid(2)-contornos(circulos(2)).Centroid(2))^2);                            
+                        factor_cm_px=7.5/dist_2_puntos; %factor de conversion
+
+                        %Calcula area real del patron en cm^2
+                        AreaRectangulo=contornos(i).Area*factor_cm_px*factor_cm_px;
+                        AreaCirculoGrande=contornos(circulos(1)).Area*factor_cm_px*factor_cm_px;
+                        AreaCirculoPeque=contornos(circulos(2)).Area*factor_cm_px*factor_cm_px;                            
+
+                        %Filtro por area real
+                        if (AreaRectangulo>75 && AreaRectangulo<120 && AreaCirculoGrande>5 && AreaCirculoGrande<20 && AreaCirculoPeque>2 && AreaCirculoPeque<15)
+                            % Dibuja patrones y centro
+                            rectangle('Position',[contornos(circulos(1)).Centroid 2 2],'EdgeColor','b','LineWidth',2);
+                            rectangle('Position',[contornos(circulos(2)).Centroid 2 2],'EdgeColor','r','LineWidth',2);                                    
+
+                            % Calcula orientacion
+                            orientacion=round(rad2deg(atan2(-(contornos(circulos(1)).Centroid(2)-contornos(circulos(2)).Centroid(2)),(contornos(circulos(1)).Centroid(1)-contornos(circulos(2)).Centroid(1)))));                               
+                            if (abs(orientacion)>90 && orientacion<0 && orientacion_mem>0)
+                                contador_vuelta=contador_vuelta+1;
+                            end
+                            if (abs(orientacion)>90 && orientacion>0 && orientacion_mem<0)
+                                contador_vuelta=contador_vuelta-1;
+                            end                                                                                                
+                            orientacion_mem=orientacion;
+                            orientacion_corregida=orientacion+(360*contador_vuelta);  
+
+
+                            %Calcular los puntos extremos del robot
+                            %Primer punto
+                            %coordeadas cartesianas
+                            robot_x1_prima=-15*(1/factor_cm_px);
+                            robot_y1_prima=30*(1/factor_cm_px); 
+                            %Pasar a polares
+                            [robot_t1_prima,robot_m1_prima]=cart2pol(robot_x1_prima,robot_y1_prima);
+                            %correccion de angulo
+                            robot_t1_prima=robot_t1_prima+deg2rad(orientacion_corregida);
+                            %Pasar a cartesianas
+                            [robot_x1,robot_y1]=pol2cart(robot_t1_prima,robot_m1_prima);
+                            robot_x1=contornos(i).Centroid(1)+robot_x1;
+                            robot_y1=contornos(i).Centroid(2)-robot_y1;
+
+                            %Segundo punto
+                            %coordeadas cartesianas
+                            robot_x2_prima=15*(1/factor_cm_px);
+                            robot_y2_prima=30*(1/factor_cm_px); 
+                            %Pasar a polares
+                            [robot_t2_prima,robot_m2_prima]=cart2pol(robot_x2_prima,robot_y2_prima);
+                            %correccion de angulo
+                            robot_t2_prima=robot_t2_prima+deg2rad(orientacion_corregida);
+                            %Pasar a cartesianas
+                            [robot_x2,robot_y2]=pol2cart(robot_t2_prima,robot_m2_prima);
+                            robot_x2=contornos(i).Centroid(1)+robot_x2;
+                            robot_y2=contornos(i).Centroid(2)-robot_y2;
+
+                            %Tercer punto
+                            %coordeadas cartesianas
+                            robot_x3_prima=15*(1/factor_cm_px);
+                            robot_y3_prima=-6*(1/factor_cm_px); 
+                            %Pasar a polares
+                            [robot_t3_prima,robot_m3_prima]=cart2pol(robot_x3_prima,robot_y3_prima);
+                            %correccion de angulo
+                            robot_t3_prima=robot_t3_prima+deg2rad(orientacion_corregida);
+                            %Pasar a cartesianas
+                            [robot_x3,robot_y3]=pol2cart(robot_t3_prima,robot_m3_prima);
+                            robot_x3=contornos(i).Centroid(1)+robot_x3;
+                            robot_y3=contornos(i).Centroid(2)-robot_y3;
+
+                            %Cuarto punto
+                            %coordeadas cartesianas
+                            robot_x4_prima=-15*(1/factor_cm_px);
+                            robot_y4_prima=-6*(1/factor_cm_px); 
+                            %Pasar a polares
+                            [robot_t4_prima,robot_m4_prima]=cart2pol(robot_x4_prima,robot_y4_prima);
+                            %correccion de angulo
+                            robot_t4_prima=robot_t4_prima+deg2rad(orientacion_corregida);
+                            %Pasar a cartesianas
+                            [robot_x4,robot_y4]=pol2cart(robot_t4_prima,robot_m4_prima);
+                            robot_x4=contornos(i).Centroid(1)+robot_x4;
+                            robot_y4=contornos(i).Centroid(2)-robot_y4;
+
+                            %grafica el robot completo
+                            line([robot_x1 robot_x2 robot_x3 robot_x4 robot_x1],[robot_y1 robot_y2 robot_y3 robot_y4 robot_y1])
+                            %text(contornos(i).Centroid(1),contornos(i).Centroid(2),int2str(orientacion_corregida),'Color','r','BackgroundColor','w','FontWeight','bold'); 
+                        end
+                    end
+                end
+            end
+        end
+    end
+    figure(1)
+    hold off
+
+    %pause()
+    
+end
+
+close all
+flushdata(vid_obj); 
+stop(vid_obj);  
+%clc

@@ -1,0 +1,41 @@
+[PROJECT]
+Target=Prueba.HEX
+Development_Mode=2
+Processor=0x877A
+ToolSuite=CCS
+Processor_Text=PIC16F877A
+
+[Directories]
+Include=
+Library=
+LinkerScript=
+
+[Target Data]
+FileList=C:\Users\JuanCq\Documents\ProyectoRobotica\PIC_C\prueba\Prueba.c
+BuildTool=C-COMPILER
+OptionString=+FM
+AdditionalOptionString=
+BuildRequired=1
+
+[Prueba.c]
+Type=4
+Path=
+FileList=
+BuildTool=
+OptionString=
+AdditionalOptionString=
+
+[mru-list]
+1=Prueba.c
+
+[Windows]
+0=0000 Prueba.c 0 0 796 451 3 0
+
+[Opened Files]
+1=C:\Users\JuanCq\Documents\ProyectoRobotica\PIC_C\prueba\Prueba.c
+2=
+3=
+[Units]
+Count=1
+1=Prueba.c (main)
+Link=0

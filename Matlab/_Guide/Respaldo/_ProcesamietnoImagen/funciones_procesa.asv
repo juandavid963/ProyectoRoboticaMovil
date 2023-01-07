@@ -1,0 +1,106 @@
+
+
+% recibir imagenes de un archivo
+f = imread ('mujer.jpg')
+f = imread ('C:\imagenes\imagen1.jpg')
+
+
+% CANALES rgb
+Im_R = f(:,:,1)
+Im_G = f(:,:,2)
+Im_B = f(:,:,3)
+
+% obtner tamaño
+[M,N] = size (f)
+
+%mostar imagen
+imshow (f)
+imshow (f,G) %Muestra la imagen f en pantalla donde G especifica el rango de intensidades. Si omitimos G, se muestra la imagen con 256 niveles de gris por defecto.
+
+% acceso a pixel
+impixel(f,i,j)   %Acceder al pixel de coordenadas (i,j) de la imagen f.
+
+% informacion de la imagen
+whos f  % nombre, tamaño, bytes, clase
+
+% guarda imagen
+imwrite (f, 'C:\imagenes\imagen2.tif');
+
+% 1. imagen RBG
+% 2. imagen escala de grises 
+% 4. imagen a blanco y negro
+
+g=rgb2gray(f)
+h=gray2ind(g)
+i=im2bw(h)
+
+% funciones de caracteristicas
+
+%isbw regrasa 1 si la imagen es binaria
+%isgray  regresa uno si la imagen es de intensidad
+%isind regresa 1 si la imagen es indexada
+%isrgb regresa 1 si la imagen es RGB
+%imfinfo regresa informacion de la igane
+
+% cortar una seccion de la imagen
+g=imcrop(f) %con ayuda de una interfaz
+g=imcrop(f,[xmin ymin ancho alto ]) % dfiniendo el rectangulo
+
+
+% manejo de ventanas
+subplot(m,n,p)
+imshow(f)
+
+
+% histograma
+imhist (f,n)  % n=256 por defecto
+
+imhist (f,n)/numel(f) % normalizado
+
+g = histeq(f, n)% ecualizado
+
+
+
+% blan y negro
+f = imread ('mujer.jpg');
+f_gris=rgb2gray(f);
+T=graythresh(f_gris);
+f_binaria=im2bw(f_gris,T)
+%Donde T es el umbral tal que todos los niveles de intensidad por debajo de T los hace 0 y todos los que son mayores que T los hace 1. Dicho umbral se puede obtener con la siguiente función la cual aplica el método de Otsu:
+
+
+% reflejar
+g=fliplr(f)
+
+%cambio de tamaño
+g=imresize(f,escala)
+
+
+% IMAGEN DE CAMARA WEB
+
+%observar que drivers hay instalados
+info=imaqhwinfo;
+% obtener informacion de la camara 'winvideo' puede haber mas de una
+% mirar Device ID [1 2 3 ...]
+info=imaqhwinfo('winvideo');
+% obserbar el formato por defecto, el nombre de la camara, los formatos
+% soportado y el Consrtuctor de objeto
+info.DeviceInfo
+
+info.DeviceInfo.SupportedFormats
+info.DeviceInfo.ObjectConstructor
+
+
+% Construllo un objeto de video
+vidobj=videoinput('winvideo',1);  % sin formato, formato por defecto
+vidobj=videoinput('winvideo',1,'YUY2_640x480'); % con formato
+% nos muestra una previa en tiempo real de la cam
+preview(vidobj);
+% toma una foto
+imgAdq = getsnapshot(vidobj);   
+% muestra la foto
+imshow(imgAdq) 
+%cierra el preview
+closepreview(vidobj) 
+% libera espacio
+delete(vidobj)

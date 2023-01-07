@@ -1,0 +1,7 @@
+>>> Warning 203 "Pic1.c" Line 113(1,1): Condition always TRUE
+>>> Warning 202 "Pic1.c" Line 16(5,6): Variable never used:   i
+>>> Warning 202 "Pic1.c" Line 17(6,7): Variable never used:   s
+>>> Warning 202 "Pic1.c" Line 18(14,19): Variable never used:   dato1
+>>> Warning 202 "Pic1.c" Line 19(14,19): Variable never used:   dato2
+      Memory usage:   ROM=18%      RAM=16% - 21%
+      0 Errors,  5 Warnings.

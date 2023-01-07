@@ -1,0 +1,125 @@
+004-005 @READ_PROGRAM_MEMORY.P1
+004-005 @WRITE_PROGRAM_MEMORY.P2
+008     PSP_DATA
+015     CCP_1_LOW
+015-016 CCP_1
+016     CCP_1_HIGH
+01B-01C CCP_2
+01B     CCP_2_LOW
+01C     CCP_2_HIGH
+020     @INTERRUPT_AREA
+021     @INTERRUPT_AREA
+022     @INTERRUPT_AREA
+023     @INTERRUPT_AREA
+024     @INTERRUPT_AREA
+025     @INTERRUPT_AREA
+026     @INTERRUPT_AREA
+027     @INTERRUPT_AREA
+028     a
+029-02C dato_in
+02D     band_recepcion
+02E     band_conexion
+02F     i
+030-034 s
+035     dato1
+036     dato2
+037     longitudinal
+038     lateral
+039     orientacion
+03A-03D adelante_derecha
+03E-041 adelante_izquierda
+042-045 atras_derecha
+046-049 atras_izquierda
+04A-04B preescaler
+04C     @TRIS_C
+04D     decod.m
+04D     @delay_ms1.P1
+04D     MAIN.@SCRATCH
+04E     MAIN.@SCRATCH
+04F     MAIN.@SCRATCH
+050     MAIN.@SCRATCH
+051-054 @SFTOI.P1
+051-054 @MULFF.P2
+051-054 @FLT.P3
+051     MAIN.@SCRATCH
+052     MAIN.@SCRATCH
+053     MAIN.@SCRATCH
+054     MAIN.@SCRATCH
+055-058 @ADDFF.P1
+055-058 @MULFF.P2
+055-058 @FLT.P3
+055-056 @SITOF.P4
+059-05C @ADDFF.P1
+059     @MULFF.@SCRATCH
+059     @FLT.@SCRATCH
+05A     @MULFF.@SCRATCH
+05A     @FLT.@SCRATCH
+05B     @MULFF.@SCRATCH
+05C     @MULFF.@SCRATCH
+05D     @ADDFF.@SCRATCH
+05D     @MULFF.@SCRATCH
+05E     @ADDFF.@SCRATCH
+05F     @ADDFF.@SCRATCH
+060     @ADDFF.@SCRATCH
+061     @ADDFF.@SCRATCH
+062     @ADDFF.@SCRATCH
+063     @ADDFF.@SCRATCH
+064     @ADDFF.@SCRATCH
+065     rda.@SCRATCH
+066     rda.@SCRATCH
+077     @SCRATCH
+078     @SCRATCH
+078     _RETURN_
+079     @SCRATCH
+07A     @SCRATCH
+07B     @SCRATCH
+07F     @INTERRUPT_AREA
+09C.6   C1OUT
+09C.7   C2OUT
+0FF     @INTERRUPT_AREA
+10D     @READ_PROGRAM_MEMORY.P1
+10D     @WRITE_PROGRAM_MEMORY.P2
+10F     @WRITE_PROGRAM_MEMORY.P1
+10F     @READ_PROGRAM_MEMORY.P2
+17F     @INTERRUPT_AREA
+1FF     @INTERRUPT_AREA
+27F     @INTERRUPT_AREA
+2FF     @INTERRUPT_AREA
+37F     @INTERRUPT_AREA
+3FF     @INTERRUPT_AREA
+
+0087  @delay_ms1
+003C  rda
+005F  rtcc
+009D  decod
+00CB  @ADDFF
+024B  @MULFF
+02C0  @SFTOI
+02DF  MAIN
+00A6  @SITOF
+020C  @FLT
+02DF  @cinit
+
+Project Files:
+    Pic1.c
+    ..\..\..\..\..\..\..\Program Files (x86)\PICC\devices\16F877A.h
+
+Units:
+    C:\Users\JuanCq\Documents\ProyectoRobotica\PIC_C\Final\Pic1\Pic1.c (main)
+
+Compiler Settings:
+    Processor:      PIC16F877A
+    Pointer Size:   16
+    ADC Range:      0-255
+    Opt Level:      0
+    Short,Int,Long: 1,8,16
+
+Output Files:
+    Errors:      C:\Users\JuanCq\Documents\ProyectoRobotica\PIC_C\Final\Pic1\Pic1.err
+    Ext Symbols: C:\Users\JuanCq\Documents\ProyectoRobotica\PIC_C\Final\Pic1\Pic1.esym
+    INHX8:       C:\Users\JuanCq\Documents\ProyectoRobotica\PIC_C\Final\Pic1\Pic1.hex
+    Symbols:     C:\Users\JuanCq\Documents\ProyectoRobotica\PIC_C\Final\Pic1\Pic1.sym
+    List:        C:\Users\JuanCq\Documents\ProyectoRobotica\PIC_C\Final\Pic1\Pic1.lst
+    Debug/COFF:  C:\Users\JuanCq\Documents\ProyectoRobotica\PIC_C\Final\Pic1\Pic1.cof
+    Call Tree:   Pic1.tre
+    Statistics:  Pic1.sta

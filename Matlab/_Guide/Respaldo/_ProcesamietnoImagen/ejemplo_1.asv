@@ -1,0 +1,34 @@
+clear all
+close all
+clc
+
+vid=videoinput('winvideo',1);
+set(vid,'FramesPerTrigger',inf);
+set(vid,'ReturnedColorspace','rgb');
+vid.FrameGrabInterval=1;
+start(vid);
+tic
+
+while(vid.FramesAcquired<=500)   
+
+img=getsnapshot(vid);   
+flushdata(vid);
+subplot(2,2,1); imshow(img);
+
+img_gris=fliplr(rgb2gray(img));
+subplot(2,2,2); imshow(img_gris);
+
+img_gris_2=histeq(img_gris);
+subplot(2,2,3); imshow(img_gris_2);
+
+T=graythresh(img_gris_2);
+img_bin=im2bw(img_gris_2,T);
+subplot(2,2,4); imshow(img_bin);
+
+toc
+tic
+end
+
+stop(vid);
+delete(vid);
+clear vid;

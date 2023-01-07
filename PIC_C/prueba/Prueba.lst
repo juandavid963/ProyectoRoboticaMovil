@@ -1,0 +1,96 @@
+CCS PCM C Compiler, Version 4.023, 11770               26-mar-16 13:04
+
+               Filename: C:\Users\JuanCq\Documents\ProyectoRobotica\PIC_C\prueba\Prueba.lst
+
+               ROM used: 59 words (1%)
+                         Largest free fragment is 2048
+               RAM used: 7 (2%) at main() level
+                         8 (2%) worst case
+               Stack:    1 locations
+
+*
+0000:  MOVLW  00
+0001:  MOVWF  0A
+0002:  GOTO   018
+0003:  NOP
+.................... #INCLUDE <16F877A.h> 
+.................... //////// Standard Header file for the PIC16F877A device //////////////// 
+.................... #device PIC16F877A 
+.................... #list 
+....................  
+.................... #FUSES NOWDT                    //No Watch Dog Timer 
+.................... #FUSES HS                       //Cristal 
+.................... #FUSES NOPROTECT                //Code not protected from reading 
+.................... #FUSES NOBROWNOUT 
+.................... #USE delay(clock=20000000) 
+0004:  MOVLW  22
+0005:  MOVWF  04
+0006:  BCF    03.7
+0007:  MOVF   00,W
+0008:  BTFSC  03.2
+0009:  GOTO   017
+000A:  MOVLW  06
+000B:  MOVWF  78
+000C:  CLRF   77
+000D:  DECFSZ 77,F
+000E:  GOTO   00D
+000F:  DECFSZ 78,F
+0010:  GOTO   00C
+0011:  MOVLW  7B
+0012:  MOVWF  77
+0013:  DECFSZ 77,F
+0014:  GOTO   013
+0015:  DECFSZ 00,F
+0016:  GOTO   00A
+0017:  RETLW  00
+.................... #DEFINE ledd pin_D2 
+....................  
+....................  
+.................... void main(void) 
+.................... {   
+0018:  CLRF   04
+0019:  BCF    03.7
+001A:  MOVLW  1F
+001B:  ANDWF  03,F
+001C:  BSF    03.5
+001D:  BSF    1F.0
+001E:  BSF    1F.1
+001F:  BSF    1F.2
+0020:  BCF    1F.3
+0021:  MOVLW  07
+0022:  MOVWF  1C
+....................    while(1) 
+....................       { 
+....................           output_high(ledd);    // apago el xbee 
+0023:  BCF    08.2
+0024:  BCF    03.5
+0025:  BSF    08.2
+....................           delay_ms(1000); 
+0026:  MOVLW  04
+0027:  MOVWF  21
+0028:  MOVLW  FA
+0029:  MOVWF  22
+002A:  CALL   004
+002B:  DECFSZ 21,F
+002C:  GOTO   028
+....................           output_low(ledd);    // apago el xbee 
+002D:  BSF    03.5
+002E:  BCF    08.2
+002F:  BCF    03.5
+0030:  BCF    08.2
+....................           delay_ms(1000);         
+0031:  MOVLW  04
+0032:  MOVWF  21
+0033:  MOVLW  FA
+0034:  MOVWF  22
+0035:  CALL   004
+0036:  DECFSZ 21,F
+0037:  GOTO   033
+....................       } 
+0038:  BSF    03.5
+0039:  GOTO   023
+.................... } 
+003A:  SLEEP
+
+Configuration Fuses:
+   Word  1: 3F32   HS NOWDT PUT NODEBUG NOPROTECT NOBROWNOUT NOLVP NOCPD NOWRT

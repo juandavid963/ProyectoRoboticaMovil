@@ -1,0 +1,14 @@
+%Guardar Imagen
+clear all
+close all
+clc
+
+imagen=imread('formas_1.jpg');
+imagen_gris=rgb2gray(imagen);
+bw=im2bw(imagen_gris,0.5);
+imshow(bw); 
+
+[L Ne]=bwlabel(bw,8);
+propied=regionprops(L);
+
+ s=find([propied.Area]>1500);
